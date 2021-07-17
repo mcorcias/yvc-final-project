@@ -4,6 +4,7 @@
           <div class="logo">
               <img src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/logo%2FWhatsApp%20Image%202021-06-04%20at%2014.57.19.jpeg?alt=media&token=6ac440eb-501b-47c0-a1f2-5efe12c0c4b4">
               <h4>ברוכים הבאים לקבוצת תמיכה אונליין</h4>
+              <h3>התחברות למערכת</h3>
           </div>
           <div class="fields">
               <div class="field">
@@ -38,6 +39,7 @@ export default {
         const {error,login,isPending} = useLogin()
         const email = ref('')
         const password=ref('')
+       
         const handleSubmit=async()=>{
            await login(email.value,password.value)
            if(!error.value){
@@ -68,11 +70,11 @@ export default {
     }
     .wrapper{
         width: 50%;
-        height: 70%;
+        height: 80%;
     }
     .wrapper .logo{
         width: 100%;
-        height: 25%;
+        height: 30%;
         display: flex;
         flex-direction: column;
         justify-content: center;

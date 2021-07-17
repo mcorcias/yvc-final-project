@@ -5,19 +5,16 @@
 </template>
 
 <script>
-import { onMounted } from '@vue/runtime-core'
-import {projectAuth} from '../firebase/config'
-
+import { computed, ref } from '@vue/runtime-core'
+import store from '../store/index'
 export default {
   name: 'Home',
   setup(){
+    const currentUser = ref(computed(()=>{
+      return store.getters.getUserProfile
+    }))
 
-    onMounted(()=>{
-      setTimeout(() => {
-        console.log(projectAuth.currentUser);
-      }, 1000);
-    })
-    return{}
+    return{currentUser}
   }
 }
 </script>
