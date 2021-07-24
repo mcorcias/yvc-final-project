@@ -3,6 +3,7 @@ import Home from '../views/Home.vue';
 import Login from '../views/Auth/Login.vue';
 import SignUp from '../views/Auth/SignUp.vue';
 import Settings from '../views/Settings.vue';
+import Courses from '../views/Courses.vue';
 // route guard
 import { projectAuth } from '../firebase/config';
 
@@ -51,6 +52,12 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
+    beforeEnter: requireAuth,
+  },
+  {
+    path: '/courses',
+    name: 'Courses',
+    component: Courses,
     beforeEnter: requireAuth,
   },
 ];

@@ -31,8 +31,8 @@
          </div>
          <div class="box box-2">
              <h1>תמונת פרופיל</h1>
-            <Avatar v-if="!user_details.avatar" icon="pi pi-user" class="p-mr-2 avatar" size="xlarge" shape="circle" />
-            <Avatar v-if="user_details.avatar" :image="user_details.avatar" class="p-mr-2 avatar" size="xlarge" shape="circle" />
+            <Avatar  v-if="!user_details.avatar" icon="pi pi-user" class="p-mr-2 avatar" size="xlarge" shape="circle" />
+            <img  v-if="user_details.avatar" :src="user_details.avatar" @click="showAvatarModal=true">
              <div class="field">
                  <Button  label="העלה תמונה" class="p-button-success" style="width:100%;" @click="handleUploadImg"/>
                  <input v-show="false" id="upload" type="file" @change="handleChange">
@@ -52,6 +52,7 @@ import Swal from 'sweetalert2'
 import Avatar from 'primevue/avatar';
 import useStorage  from '../composables/useStorage'
 import {projectFirestore} from '../firebase/config'
+import {showAvatarModal} from '../methods/AvatarModal'
 export default {
     components:{InputText,Button,Avatar},
     setup(){
@@ -61,6 +62,7 @@ export default {
         const fileError = ref(null)
         const error = ref('')
         const user_details = ref({})
+    
         const handleUpdateProfile = async()=>{
             if(!validation()){
                 Swal.fire({
@@ -131,7 +133,7 @@ export default {
             }, 500);
         })
 
-        return{user_details,handleUpdateProfile,handleUploadImg,handleChange,error,fileError}
+        return{user_details,handleUpdateProfile,handleUploadImg,handleChange,error,fileError,showAvatarModal}
     }
 }
 </script>
@@ -144,6 +146,7 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        overflow: hidden;
     }
     .wrapper{
         width: 95%;
@@ -153,7 +156,7 @@ export default {
     }
     .box{
         width: 100%;
-        height: 90%;
+        height:100%;
         border: 2px solid lightgreen;
         border-radius: 10px;
         display: flex;
@@ -176,7 +179,6 @@ export default {
         font-size: 1.2rem;
         font-weight: bold;
     }
-   
     input[type="date"] {
     height: 35px;
     border: 0.5px solid lightgrey;
@@ -188,5 +190,11 @@ export default {
     input[type="date"]:focus {
     outline: none;
     border: 1.1px solid lightblue;
+    }
+    .box-2 img{
+        width: 25%;
+        height: 25%;
+        border-radius: 50%;
+        cursor: pointer;
     }
 </style>

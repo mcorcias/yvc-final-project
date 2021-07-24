@@ -2,11 +2,11 @@
 <div class="app-container">
   <Navbar @toggleSideBar="handleToggleSideBar"/>
   <router-view/>
-  <Sidebar v-model:visible="visibleLeft">
+  <Sidebar v-model:visible="visibleLeft"> 
 	  <div class="sidebar-container">
       <div class="header">
           <Avatar v-if="!avatar" icon="pi pi-user" class="p-mr-2 avatar" size="xlarge" shape="circle" />
-          <Avatar v-if="avatar" :image="avatar" class="p-mr-2 avatar" size="xlarge" shape="circle" />
+          <Avatar v-if="avatar" :image="avatar" class="p-mr-2 avatar" size="xlarge" shape="circle" @click="showAvatarModal=true" />
           <h4>{{userName}}</h4>
       </div>
       <div class="options">
@@ -16,6 +16,14 @@
           </div>
           <div class="content">
             <p>הגדרות</p>
+          </div>
+        </div>
+        <div class="icon" @click="handleRedirect('Courses')">
+          <div class="image">
+            <img src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/icons%2Fbook.png?alt=media&token=1f13992d-4053-42b9-b9d8-79d98e2bcece">
+          </div>
+          <div class="content">
+            <p>קורסים</p>
           </div>
         </div>
         <div class="icon">
@@ -37,6 +45,12 @@
       </div>
     </div>
   </Sidebar>
+
+  <Dialog header="תמונת פרופיל" v-model:visible="showAvatarModal"  modal>
+      <div class="progile-image">
+          <img :src="avatar" >
+      </div>
+  </Dialog>
 </div>
 
 </template>
@@ -48,12 +62,14 @@ import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'                
 import 'primeicons/primeicons.css'                           
 import Sidebar from 'primevue/sidebar';
+import Dialog from 'primevue/dialog';
 import Avatar from 'primevue/avatar';
 import store from '../src/store/index'
+import {showAvatarModal} from './methods/AvatarModal'
 import { useRouter } from 'vue-router'
 
 export default {
-  components:{Navbar,Sidebar,Avatar},
+  components:{Navbar,Sidebar,Avatar,Dialog},
   setup(){
     const router = useRouter()
     const visibleLeft = ref(false)
@@ -61,6 +77,7 @@ export default {
       visibleLeft.value =! visibleLeft.value
     }
     const handleRedirect=(path)=>{
+      visibleLeft.value=false
       router.push({name:path})
     }
 
@@ -74,7 +91,7 @@ export default {
     const userName = ref(computed(()=>{
       return store.getters.getUserProfile.fullName
     }))
-    return{visibleLeft,handleToggleSideBar,handleRedirect,userName,avatar}
+    return{visibleLeft,handleToggleSideBar,handleRedirect,userName,avatar,showAvatarModal}
   }
 
 }
@@ -91,8 +108,7 @@ export default {
   }
   .sidebar-container{
     width: 100%;
-    height: 100vh;
-    
+    height: 90vh;
   }
   .sidebar-container .header{
     text-align: center;
@@ -110,7 +126,7 @@ export default {
   .options{
     margin-top: 10px;
     width: 100%;
-    height: 40%;
+    height: 40vh;
   }
   .icon{
     margin-bottom: 15px;
@@ -132,6 +148,14 @@ export default {
   }
   .icon:hover{
     transform: scale(1.1);
+  }
+  .progile-image{
+    width: auto;
+    height: auto;
+  }
+  .progile-image img{
+    max-height: 100%;
+    max-width: 100%;
   }
   
 </style>

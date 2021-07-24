@@ -9,7 +9,7 @@
 
             </ul>
         </div>
-        <div class="logo">
+        <div class="logo" @click="handleRedirect('Home')">
             <div class="image">
                 <img src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/logo%2FWhatsApp%20Image%202021-06-04%20at%2014.57.19.jpeg?alt=media&token=6ac440eb-501b-47c0-a1f2-5efe12c0c4b4">
             </div>
@@ -76,7 +76,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     .navbar-container{
         width: 100%;
         height: 3rem; 
@@ -110,7 +110,7 @@ export default {
         flex-direction: row;
         justify-content: flex-end;
         align-items: center;
-
+        cursor: pointer;
     }
     .logo .image{
         width: 40%;
