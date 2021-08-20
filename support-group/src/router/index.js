@@ -4,6 +4,8 @@ import Login from '../views/Auth/Login.vue';
 import SignUp from '../views/Auth/SignUp.vue';
 import Settings from '../views/Settings.vue';
 import Courses from '../views/Courses.vue';
+import ArchivesCourses from '../views/ArchivesCourses.vue';
+import store from '../store';
 // route guard
 import { projectAuth } from '../firebase/config';
 
@@ -17,6 +19,19 @@ const requireAuth = (to, from, next) => {
       next();
     }
   }, 100);
+};
+
+const requireAuthAndRoleTeacher = (to, from, next) => {
+  setTimeout(() => {
+    let user = projectAuth.currentUser;
+    let role = store.getters.getUserProfile.role;
+    console.log('role:', role);
+    if (!user || role != 'teacher') {
+      next({ name: 'Home' });
+    } else {
+      next();
+    }
+  }, 500);
 };
 
 // if the user is connecting
@@ -59,6 +74,12 @@ const routes = [
     name: 'Courses',
     component: Courses,
     beforeEnter: requireAuth,
+  },
+  {
+    path: '/archives_courses',
+    name: 'ArchivesCourses',
+    component: ArchivesCourses,
+    beforeEnter: requireAuthAndRoleTeacher,
   },
 ];
 

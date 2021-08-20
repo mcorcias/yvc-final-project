@@ -3,6 +3,7 @@
   <Navbar @toggleSideBar="handleToggleSideBar"/>
   <router-view/>
   <Sidebar v-model:visible="visibleLeft"> 
+    {{userRole}}
 	  <div class="sidebar-container">
       <div class="header">
           <Avatar v-if="!avatar" icon="pi pi-user" class="p-mr-2 avatar" size="xlarge" shape="circle" />
@@ -24,6 +25,14 @@
           </div>
           <div class="content">
             <p>קורסים</p>
+          </div>
+        </div>
+        <div v-if="userRole=='teacher'" class="icon" @click="handleRedirect('ArchivesCourses')">
+          <div class="image">
+            <img src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/icons%2Farchive.png?alt=media&token=6c55a23c-b91f-4a00-a7f9-1b04a70ab255">
+          </div>
+          <div class="content">
+            <p>ארכיון קורסים</p>
           </div>
         </div>
         <div class="icon">
@@ -91,7 +100,10 @@ export default {
     const userName = ref(computed(()=>{
       return store.getters.getUserProfile.fullName
     }))
-    return{visibleLeft,handleToggleSideBar,handleRedirect,userName,avatar,showAvatarModal}
+    const userRole = ref(computed(()=>{
+       return store.getters.getUserProfile.role
+    }))
+    return{visibleLeft,handleToggleSideBar,handleRedirect,userRole,userName,avatar,showAvatarModal}
   }
 
 }

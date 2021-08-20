@@ -5,12 +5,10 @@
             <i class="pi pi-search" />
             <InputText  type="text" v-model="search" placeholder="חפש קורס" />
          </span>
-         <Dropdown class="dropdown" style="width:20%; margin-right:5px;" v-model="filterBySort" :options="sorting_options" placeholder="מיין לפי" />
-         <img v-if="isTeacher" class="plus-icon" src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/icons%2Fplus.png?alt=media&token=5492e03a-58e7-4c94-8692-27cb25d0d5fd" @click="showAddCourse=!showAddCourse">
       </div>
       <div class="content">
           <Accordion :multiple="true" style="width:80%;">
-              <template v-for="course in sortedCorses" :key="course.course_id">
+              <template v-for="course in filterBySearch " :key="course.course_id">
                   <AccordionTab>
                         <template #header>
                             <span style="color:green;">{{course.course_name}}, מרצה: {{course.teache_name}} - <span style="color:red;">{{course.enrolled.length}}</span>/{{course.capacity}}</span>
@@ -28,11 +26,26 @@
                                <Tag v-if="course.enrolled.length==course.capacity" class="p-mr-2" severity="warning" value="הקורס בתפוסה מלאה"></Tag>
                                <Button label="מחק קורס" class="p-button-danger" @click="handleDeleteCourse(course.course_id)"/>
                            </div>
-                           <div class="btn" v-else>
-                            <Button v-if="!isEnrolled(course.enrolled) && course.enrolled.length<course.capacity" label="הירשם לקורס" class="p-button-success" @click="handleEnroll(course.course_id,course.course_name)" />
-                            <Button v-if="isEnrolled(course.enrolled)" label="בטל רישום לקורס" class="p-button-danger" @click="handleCancelEnroll(course.course_id,course.course_name)" />
-                            <Tag v-if="course.enrolled.length==course.capacity" class="p-mr-2" severity="warning" value="הקורס בתפוסה מלאה"></Tag>
-                           </div>
+                       </div>
+                       <div class="students-list">
+                            <h3>רשומים לקורס</h3>
+                            <template v-for="student in course.enrolled" :key="student.id">
+                                <div class="student">
+                                    <div class="full-name">
+                                        <p>{{student.fullName}}</p>
+                                    </div>
+                                    <div class="email">
+                                        <p>{{student.email}}</p>
+                                    </div>
+                                    <div class="date">
+                                        <p>נרשם בתאריך</p>
+                                        <p>{{new Date(student.createdAt.seconds * 1000).toLocaleDateString('he')}}</p>
+                                    </div>
+                                    <div class="phone">
+                                        <p>{{student.phoneNumber}}</p>
+                                    </div>
+                                </div>
+                            </template>
                        </div>
                  </AccordionTab>
               </template>
@@ -207,46 +220,8 @@ export default {
         const user = ref()
         const isPending = ref(false)
 
-        const sortedCorses=ref(computed(()=>{
-            if(filterBySort.value=='' || filterBySort.value=='ללא מיון' ) return filterBySearch.value
-            if(filterBySort.value=='קורסים פנויים'){
-                return filterBySearch.value.filter(course=>{
-                    if(course.enrolled.length<course.capacity) return course
-                })
-            }
-            if(filterBySort.value=='קורסים בתפוסה מלאה'){
-                return filterBySearch.value.filter(course=>{
-                    if(course.enrolled.length==course.capacity) return course
-                })
-            }
-            if(filterBySort.value=='קורסים שלי'){
-                return filterBySearch.value.filter(course=>{
-                    const index = course.enrolled.findIndex(_user=>_user.id==user.value.id)
-                    if(index!=-1){
-                        return course
-                    }
-                })
-            }
-            if(filterBySort.value=='קורסים שאינני רשום'){
-                return filterBySearch.value.filter(course=>{
-                    const index = course.enrolled.findIndex(_user=>_user.id==user.value.id)
-                    if(index==-1){
-                        return course
-                    }
-                })
-            }
+       
 
-        }))
-
-        const filterBySort=ref('')
-
-        const sorting_options=ref([
-            "ללא מיון",
-            "קורסים פנויים",
-            "קורסים בתפוסה מלאה",
-            "קורסים שלי",
-            "קורסים שאינני רשום"
-        ])
 
         const filterBySearch=ref(computed(()=>{
           if(search.value=='')return courses.value
@@ -350,8 +325,7 @@ export default {
 
         let snapshot
         const getCorsesFromDb=()=>{
-            var startfulldate = firebase.firestore.Timestamp.fromDate(new Date(Date.now()));
-           snapshot = projectFirestore.collection('Courses').where('start_date','>',startfulldate).onSnapshot(snapshot => {
+           snapshot = projectFirestore.collection('Courses').where('teacher_id','==',user.value.id).onSnapshot(snapshot => {
                snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         courses.value.push(change.doc.data())
@@ -401,9 +375,6 @@ export default {
             courses,
             user,
             filterBySearch,
-            filterBySort,
-            sorting_options,
-            sortedCorses,
             isPending,
             isTeacher,
             showAddCourse,
@@ -492,5 +463,26 @@ export default {
     input[type="datetime-local"]:focus {
     outline: none;
     border: 1.1px solid lightblue;
+    }
+    .students-list{
+        margin-top: 10px;
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .students-list .student{
+        display: flex;
+        width: 100%;
+        height: 10%;
+    }
+    .student div{
+        width: 25%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+       
     }
 </style>
