@@ -29,8 +29,8 @@
                                <Button label="מחק קורס" class="p-button-danger" @click="handleDeleteCourse(course.course_id)"/>
                            </div>
                            <div class="btn" v-else>
-                            <Button v-if="!isEnrolled(course.enrolled) && course.enrolled.length<course.capacity" label="הירשם לקורס" class="p-button-success" @click="handleEnroll(course.course_id,course.course_name)" />
-                            <Button v-if="isEnrolled(course.enrolled)" label="בטל רישום לקורס" class="p-button-danger" @click="handleCancelEnroll(course.course_id,course.course_name)" />
+                            <Button v-if="!isEnrolled(course.enrolled) && course.enrolled.length<course.capacity" label="הירשם לקורס" class="p-button-success" @click="handleEnroll(course)" />
+                            <Button v-if="isEnrolled(course.enrolled)" label="בטל רישום לקורס" class="p-button-danger" @click="handleCancelEnroll(course)" />
                             <Tag v-if="course.enrolled.length==course.capacity" class="p-mr-2" severity="warning" value="הקורס בתפוסה מלאה"></Tag>
                            </div>
                        </div>
@@ -61,6 +61,10 @@
                     <input type="datetime-local" v-model="course_data.end_date">
                 </div>
               </div>
+              <div class="field">
+                  <MultiSelect style="width:100%" v-model="course_data.days" :options="days_options" optionLabel="brand" optionValue="value" placeholder="בחר ימים" />
+        
+              </div>
               <p>תיאור הקורס</p>
               <Textarea v-model="course_data.course_content" style="width:100%;"  rows="5" cols="30" />
               <Button v-if="!isEdit" style="width:100%" label="צור קורס" class="p-button-success" @click="handleCreateCourse" />
@@ -74,6 +78,7 @@
 import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
+import MultiSelect from 'primevue/multiselect';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import Button from 'primevue/button';
@@ -87,9 +92,17 @@ import { computed, onMounted, onUnmounted } from '@vue/runtime-core';
 import store from '../store';
 
 export default {
-    components:{InputText,Accordion,AccordionTab,Button,Tag,Dropdown,Dialog,InputNumber,Textarea},
+    components:{InputText,Accordion,AccordionTab,Button,Tag,Dropdown,Dialog,InputNumber,Textarea,MultiSelect},
     setup(){
         
+        const days_options=ref([
+			{brand: 'יום א\'', value: 0},
+			{brand: 'יום ב\'', value: 1},
+			{brand: 'יום ג\'', value: 2},
+			{brand: 'יום ד\'', value: 3},
+			{brand: 'יום ה\'', value: 4},
+			{brand: 'יום ו\'', value: 5},
+		])
         const isEdit = ref(false)
         const course_id_when_edit = ref('')
         const handleEditCourse=(course)=>{
@@ -109,10 +122,13 @@ export default {
             course_name:'',
             teache_name:'',
             teacher_id:'',
+            enrolled_id:[],
             enrolled:[],
             capacity:0,
             start_date:'',
             end_date:'',
+            days:[],
+
             course_content:'',
         })
 
@@ -146,6 +162,12 @@ export default {
                     case 'course_content':
                         if(!value){
                             error_msg.value = 'עליך לרשום תיאור לקורס'
+                            return false
+                        }
+                        break;
+                    case 'days':
+                        if(value.length==0){
+                            error_msg.value = 'עליך לבחור ימים שהם מתרחש הקורס בשבוע'
                             return false
                         }
                         break;
@@ -256,21 +278,63 @@ export default {
           })
       }))
 
-        const handleEnroll=async(courseId,courseName)=>{
-            const docs = await projectFirestore.collection('Courses').doc(courseId).get()
-            const current_enrolled_arr =  docs.data().enrolled.map(user=>user)
-            console.log(current_enrolled_arr);
-            current_enrolled_arr.push(user.value)
-            await projectFirestore.collection('Courses').doc(courseId).set({
-                enrolled:current_enrolled_arr
-            },{merge:true})
-            Swal.fire({
-                icon: 'success',
-                title:'הצלחה',
-                text:  `נרשמת בהצלחה לקורס:${courseName}`,
-            })
+        const handleEnroll=async(course)=>{
+            console.log(course);
+            if(!(await enrolle_validation(course))){
+                Swal.fire({
+                icon: 'error',
+                title:'שגיאה',
+                text:error_msg.value,
+                })
+            }else{
+                const index_1 = course.enrolled.findIndex(student=>student.id==user.value.id)
+                const index_2 = course.enrolled_id.findIndex(student=>student==user.value)
+                if(index_1==-1 && index_2==-1){
+                    course.enrolled.push(user.value)
+                    course.enrolled_id.push(user.value.id)
+                    await projectFirestore.collection('Courses').doc(course.course_id).set({
+                        enrolled:course.enrolled,
+                        enrolled_id:course.enrolled_id
+                    },{merge:true})
+                    Swal.fire({
+                        icon: 'success',
+                        title:'הצלחה',
+                        text:  `נרשמת בהצלחה לקורס:${course.course_name}`,
+                    })
+                }
+            }
         }
-        const handleCancelEnroll = async(courseId)=>{
+        const enrolle_validation=async(course)=>{
+            const days = course.days
+            const s_hours = new Date(course.start_date.seconds * 1000).getHours()<10?'0'+new Date(course.start_date.seconds * 1000).getHours():new Date(course.start_date.seconds * 1000).getHours()
+            const s_minutes = new Date(course.start_date.seconds * 1000).getMinutes()<10?'0'+new Date(course.start_date.seconds * 1000).getMinutes():new Date(course.start_date.seconds * 1000).getMinutes()
+            const start = s_hours+":"+s_minutes
+            const e_hours = new Date(course.end_date.seconds * 1000).getHours()<10?'0'+new Date(course.end_date.seconds * 1000).getHours():new Date(course.end_date.seconds * 1000).getHours()
+            const e_minutes = new Date(course.end_date.seconds * 1000).getMinutes()<10?'0'+new Date(course.end_date.seconds * 1000).getMinutes():new Date(course.end_date.seconds * 1000).getMinutes()
+            const end = e_hours+":"+e_minutes
+            const docs= await my_courses()
+            for(const doc of docs){
+                if(doc.days.includes(days[0]) || doc.days.includes(days[1])){
+                    
+                    const _start=doc.start_date.toDate().getHours()+":"+doc.start_date.toDate().getHours()
+                    const _end = doc.end_date.toDate().getHours()+":"+doc.end_date.toDate().getHours()
+                    if(Date.parse(`01/01/2011 ${end}`) >= Date.parse(`01/01/2011 ${_start}`) ||Date.parse(`01/01/2011 ${start}`)<= Date.parse(`01/01/2011 ${_end}`)){
+                        console.log('check');
+                        error_msg.value=`כפילות בשעות בקורס ${doc.course_name}`
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+
+        const my_courses=async()=>{
+            const docs = await projectFirestore.collection('Courses')
+            .where('enrolled_id','array-contains',user.value.id).get()
+            return docs.docs.map(doc=>doc.data())
+        }
+
+        const handleCancelEnroll = async(course)=>{
             Swal.fire({
                 title: '?האם אתה בטוח שאתה רוצה לבטל קורס זה?',
                 icon: 'question',
@@ -281,13 +345,20 @@ export default {
                 showCloseButton: true
             }).then(async res=>{
                 if(res.isConfirmed){
-                    const docs = await projectFirestore.collection('Courses').doc(courseId).get()
-                    let current_enrolled_arr =  docs.data().enrolled.map(user=>user)
-                    current_enrolled_arr = current_enrolled_arr.filter(_user=>_user.id!=user.value.id)
-                    
-                    await projectFirestore.collection('Courses').doc(courseId).set({
-                        enrolled:current_enrolled_arr
-                    },{merge:true})
+                    const index_1 = course.enrolled.findIndex(student=>student.id==user.value.id)
+                    const index_2 = course.enrolled_id.findIndex(student=>student==user.value.id)
+                    console.log(index_1,index_2);
+                    console.log(course.enrolled_id);
+                    if(index_1!=-1 && index_2!=-1){
+                        console.log('check');
+                        course.enrolled.splice(index_1,1)
+                        course.enrolled_id.splice(index_2,1)
+                        console.log('after:',course.enrolled_id);
+                        await projectFirestore.collection('Courses').doc(course.course_id).set({
+                         enrolled:course.enrolled,
+                         enrolled_id:course.enrolled_id
+                        },{merge:true})
+                    }
                 }
             })
         }
@@ -410,7 +481,8 @@ export default {
             course_data,
             error_msg,
             isEdit,
-            course_id_when_edit
+            course_id_when_edit,
+            days_options
         }
     }
 }

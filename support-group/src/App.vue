@@ -35,7 +35,7 @@
             <p>ארכיון קורסים</p>
           </div>
         </div>
-        <div class="icon">
+        <div class="icon" @click="handleRedirect('Calendar')">
           <div class="image">
             <img src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/icons%2Fcalendar.png?alt=media&token=2bbc49eb-7a16-41fe-98be-1ca83654bdae">
           </div>
@@ -117,6 +117,8 @@ export default {
   }
   .app-container{
     width: 100vw;
+    background: rgb(243,244,248);
+    background: radial-gradient(circle, rgba(243,244,248,1) 0%, rgba(215,221,229,1) 100%);
   }
   .sidebar-container{
     width: 100%;

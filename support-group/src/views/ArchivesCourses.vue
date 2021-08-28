@@ -325,7 +325,9 @@ export default {
 
         let snapshot
         const getCorsesFromDb=()=>{
-           snapshot = projectFirestore.collection('Courses').where('teacher_id','==',user.value.id).onSnapshot(snapshot => {
+           var startfulldate = firebase.firestore.Timestamp.fromDate(new Date(Date.now()));
+           snapshot = projectFirestore.collection('Courses').where('teacher_id','==',user.value.id)
+           .where('start_date','<',startfulldate).onSnapshot(snapshot => {
                snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         courses.value.push(change.doc.data())
