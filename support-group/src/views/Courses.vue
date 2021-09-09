@@ -315,7 +315,6 @@ export default {
             const docs= await my_courses()
             for(const doc of docs){
                 if(doc.days.includes(days[0]) || doc.days.includes(days[1])){
-                    
                     const _start=doc.start_date.toDate().getHours()+":"+doc.start_date.toDate().getHours()
                     const _end = doc.end_date.toDate().getHours()+":"+doc.end_date.toDate().getHours()
                     if(Date.parse(`01/01/2011 ${end}`) >= Date.parse(`01/01/2011 ${_start}`) ||Date.parse(`01/01/2011 ${start}`)<= Date.parse(`01/01/2011 ${_end}`)){

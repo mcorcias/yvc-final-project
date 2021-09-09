@@ -3,7 +3,6 @@
   <Navbar @toggleSideBar="handleToggleSideBar"/>
   <router-view/>
   <Sidebar v-model:visible="visibleLeft"> 
-    {{userRole}}
 	  <div class="sidebar-container">
       <div class="header">
           <Avatar v-if="!avatar" icon="pi pi-user" class="p-mr-2 avatar" size="xlarge" shape="circle" />
@@ -43,12 +42,13 @@
             <p>יומן</p>
           </div>
         </div>
-        <div class="icon">
+        <div class="icon" @click="handleRedirect('UserMessages')">
            <div class="image">
-            <img src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/icons%2Fchat.png?alt=media&token=e1841a4a-892d-4093-8ee0-d7907e062440">
+            <img src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/icons%2Fletter.png?alt=media&token=f7325470-a86e-4feb-b8b2-be7d927b2913">
+            <div v-if="qnt_msg>0" class="counter">{{qnt_msg}}</div>
            </div>
            <div class="content">
-            <p>צ'אט</p>
+            <p>הודעות</p>
            </div>
         </div>
       </div>
@@ -103,7 +103,11 @@ export default {
     const userRole = ref(computed(()=>{
        return store.getters.getUserProfile.role
     }))
-    return{visibleLeft,handleToggleSideBar,handleRedirect,userRole,userName,avatar,showAvatarModal}
+
+    const qnt_msg = ref(computed(()=>{
+      return store.getters.get_qnt_msgs
+    }))
+    return{visibleLeft,handleToggleSideBar,handleRedirect,userRole,userName,avatar,showAvatarModal,qnt_msg}
   }
 
 }
@@ -122,7 +126,8 @@ export default {
   }
   .sidebar-container{
     width: 100%;
-    height: 90vh;
+    height: 100%;
+    overflow: hidden;
   }
   .sidebar-container .header{
     text-align: center;
@@ -138,6 +143,7 @@ export default {
     cursor: pointer;
   }
   .options{
+    padding: 0 15px;
     margin-top: 10px;
     width: 100%;
     height: 40vh;
@@ -152,8 +158,21 @@ export default {
     cursor: pointer;
   }
   .icon .image{
+    position: relative;
     width: 20%;
     height: 100%;
+  }
+  .counter{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    background-color: red;
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    font-size: 15px;
   }
   .icon .content{
     width: 70%;
@@ -161,7 +180,11 @@ export default {
     font-size: 1.3rem;
   }
   .icon:hover{
-    transform: scale(1.1);
+    transform: scale(1.01);
+    background-color: rgb(149, 163, 177);
+    border-top-left-radius:15px;
+    border-bottom-left-radius:15px;
+    color: #fff;
   }
   .progile-image{
     width: auto;

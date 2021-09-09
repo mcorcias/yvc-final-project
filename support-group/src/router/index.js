@@ -5,6 +5,7 @@ import SignUp from '../views/Auth/SignUp.vue';
 import Settings from '../views/Settings.vue';
 import Courses from '../views/Courses.vue';
 import ArchivesCourses from '../views/ArchivesCourses.vue';
+import UserMessages from '../views/UserMessages.vue';
 import Calendar from '../views/Calendar.vue';
 import store from '../store';
 // route guard
@@ -87,6 +88,12 @@ const routes = [
     name: 'ArchivesCourses',
     component: ArchivesCourses,
     beforeEnter: requireAuthAndRoleTeacher,
+  },
+  {
+    path: '/user_messages',
+    name: 'UserMessages',
+    component: UserMessages,
+    beforeEnter: requireAuth,
   },
 ];
 

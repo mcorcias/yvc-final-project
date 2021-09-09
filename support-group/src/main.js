@@ -13,6 +13,7 @@ let app;
 projectAuth.onAuthStateChanged(async (user) => {
   if (user) {
     await store.dispatch('updateUserProfile', user.uid);
+    await store.dispatch('update_numbers_msgs', user.uid);
   }
   if (!app) {
     app = createApp(App)
