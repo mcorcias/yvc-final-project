@@ -21,11 +21,11 @@
               </div>
               <div class="field">
                   <p>אימות סיסמה</p>
-                  <input class="password" type="password" style="width:100%;" v-model="values.password_conf">
+                  <input  @keyup.enter="handleSubmit" class="password" type="password" style="width:100%;" v-model="values.password_conf">
               </div>
           </div>
           <div class="btn" style="text-align:center;">
-              <Button v-if="!isPending" label="הירשם" class="p-button-secondary"  style="width:60%;" @click="handleSubmit"/>
+              <Button v-if="!isPending" label="הירשם" class="p-button-secondary"  style="width:60%;" @click="handleSubmit" />
               <Button v-if="isPending" label="טוען..." class="p-button-secondary"  style="width:60%;" />
           </div>
       </div>
@@ -179,5 +179,10 @@ export default {
         color: #da0f41;
         font-size: 14px;
         margin: 16px 0;
+    }
+    @media screen and (max-width: 600px) {
+      .wrapper{
+          width: 90%;
+      }
     }
 </style>

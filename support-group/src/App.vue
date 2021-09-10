@@ -1,6 +1,7 @@
 <template>
 <div class="app-container">
   <Navbar @toggleSideBar="handleToggleSideBar"/>
+  <ChatBox v-if="userRole=='user'"/>
   <router-view/>
   <Sidebar v-model:visible="visibleLeft"> 
 	  <div class="sidebar-container">
@@ -73,12 +74,13 @@ import 'primeicons/primeicons.css'
 import Sidebar from 'primevue/sidebar';
 import Dialog from 'primevue/dialog';
 import Avatar from 'primevue/avatar';
+import ChatBox from '../src/components/chat/ChatBox.vue'
 import store from '../src/store/index'
 import {showAvatarModal} from './methods/AvatarModal'
 import { useRouter } from 'vue-router'
 
 export default {
-  components:{Navbar,Sidebar,Avatar,Dialog},
+  components:{Navbar,Sidebar,Avatar,Dialog,ChatBox},
   setup(){
     const router = useRouter()
     const visibleLeft = ref(false)

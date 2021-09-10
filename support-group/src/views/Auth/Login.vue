@@ -13,7 +13,7 @@
               </div>
               <div class="field">
                   <p>סיסמה</p>
-                  <input class="password" type="password" style="width:100%;" v-model="password">
+                  <input class="password" type="password" @keyup.enter="handleSubmit"  style="width:100%;" v-model="password">
               </div>
           </div>
           <div class="btn" style="text-align:center;">
@@ -113,5 +113,11 @@ export default {
         color: #da0f41;
         font-size: 14px;
         margin: 16px 0;
+    }
+
+    @media screen and (max-width: 600px) {
+      .wrapper{
+          width: 90%;
+      }
     }
 </style>

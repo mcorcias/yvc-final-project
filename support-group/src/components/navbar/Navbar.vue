@@ -27,6 +27,7 @@ import { ref } from '@vue/reactivity';
 import { projectAuth } from '../../firebase/config';
 import useLogout from '../../composables/useLogout'
 import Swal from 'sweetalert2'
+import store from '../../store';
 export default {
     components:{Button},
     emits:['toggleSideBar'],
@@ -46,6 +47,7 @@ export default {
             alert_with_conf().then(async res=>{
                 if(res.isConfirmed){
                     await logout()
+                    store.state.user=''
                     router.push({name:'Login'})  
                 }
             })
