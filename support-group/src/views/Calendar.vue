@@ -164,11 +164,10 @@ export default {
     }
     .calendar-container{
         width: 100%;
-        height: calc(100vh - 3rem);
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
- 
     }
     .calendar{
         margin-top: 25px;
@@ -188,5 +187,14 @@ export default {
     }
     .event-details .field h4{
         margin-left: 5px;
+    }
+
+    @media screen and (max-width: 600px) {
+         .calendar{
+            padding: 5px;
+            width: 100%;
+            height: 100%;
+            font-size: .7rem;
+        }    
     }
 </style>

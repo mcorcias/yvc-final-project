@@ -62,7 +62,7 @@ export default {
 <style scoped>
     .login-container{
         width: 100%;
-        height: calc(100vh - 3rem);
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -88,7 +88,7 @@ export default {
     .fields{
         margin-top:25px;
         width: 100%;
-        height: auto;
+        height: fit-content;
     }
     .fields .field{
         width: inherit;
@@ -118,6 +118,9 @@ export default {
     @media screen and (max-width: 600px) {
       .wrapper{
           width: 90%;
+      }
+      .wrapper .logo{
+          border-bottom: unset;
       }
     }
 </style>

@@ -81,7 +81,7 @@ export default {
 <style scoped>
     .navbar-container{
         width: 100%;
-        height: 3rem; 
+        height: 60px; 
         display: flex;
         border-bottom: 1px solid lightgray;
     }

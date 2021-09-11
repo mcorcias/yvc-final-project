@@ -413,4 +413,10 @@ setup(){
     opacity: 0;
   }
 }
+@media screen and (max-width: 600px) {
+  .expanded {
+    width: 300px;
+    height: 60vh;
+  }
+}
 </style>

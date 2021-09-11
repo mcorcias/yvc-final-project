@@ -89,7 +89,7 @@ export default {
     .user-messages{
         font-size: 2rem;
         width: 100%;
-        height: calc(100vh - 3rem);
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -110,5 +110,15 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+    
+    @media screen and (max-width: 600px) {
+       .user-messages{
+           text-align: center;
+       }
+       .user-messages img{
+           width: 150px;
+           height: 150px;
+       }
     }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="home-container">
     <ChatManager v-if="currentUser.role=='psyc'" />
+    <CreateMsg v-if="currentUser.role=='teacher'"/>
   </div>
 </template>
 
@@ -8,8 +9,9 @@
 import { computed, ref } from '@vue/runtime-core'
 import store from '../store/index'
 import ChatManager from '../components/chat/admin/ChatManager.vue'
+import CreateMsg from '../components/msg_for_lect/CreateMsg.vue'
 export default {
-  components:{ChatManager},
+  components:{ChatManager,CreateMsg},
   name: 'Home',
   setup(){
     const currentUser = ref(computed(()=>{
@@ -25,6 +27,7 @@ export default {
   .home-container{
     font-size: 2rem;
     width: 100%;
-    height: calc(100vh - 3rem);
+    height: 100%;
+    overflow-y: auto;
   }
 </style>

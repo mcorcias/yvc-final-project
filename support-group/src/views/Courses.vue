@@ -9,7 +9,7 @@
          <img v-if="isTeacher" class="plus-icon" src="https://firebasestorage.googleapis.com/v0/b/yvc-final-project-f2305.appspot.com/o/icons%2Fplus.png?alt=media&token=5492e03a-58e7-4c94-8692-27cb25d0d5fd" @click="showAddCourse=!showAddCourse">
       </div>
       <div class="content">
-          <Accordion :multiple="true" style="width:80%;">
+          <Accordion :multiple="true" class="accordion">
               <template v-for="course in sortedCorses" :key="course.course_id">
                   <AccordionTab>
                         <template #header>
@@ -490,8 +490,8 @@ export default {
 <style scoped>
     .container{
         padding: 1.2rem;
-        width: 100vw;
-        height: calc(100vh - 3rem);
+        width: 100%;
+        height: 100%;
         
     }
     .search-bar{
@@ -502,7 +502,7 @@ export default {
     }
     .content{
         width: 100%;
-        height: calc(100% - 10%);
+        height: 90%;
         overflow: hidden;
         overflow-y: auto;
         display: flex;
@@ -515,7 +515,7 @@ export default {
     }
     .course-content{
         width: 100%;
-        height: auto;
+        height: fit-content;
         margin-top: 15px;
         
     }
@@ -563,5 +563,14 @@ export default {
     input[type="datetime-local"]:focus {
     outline: none;
     border: 1.1px solid lightblue;
+    }
+    .accordion{
+        width: 80%;
+    }
+
+    @media screen and (max-width: 600px) {
+        .accordion {
+            width: 100%;
+        }
     }
 </style>

@@ -1,10 +1,10 @@
 <template>
+ <Navbar @toggleSideBar="handleToggleSideBar"/>
 <div class="app-container">
-  <Navbar @toggleSideBar="handleToggleSideBar"/>
-  <ChatBox v-if="userRole=='user'"/>
+  <ChatBox v-if="userRole=='user' && path=='/'"/>
   <router-view/>
   <Sidebar v-model:visible="visibleLeft"> 
-	  <div class="sidebar-container">
+    <div class="sidebar-container">
       <div class="header">
           <Avatar v-if="!avatar" icon="pi pi-user" class="p-mr-2 avatar" size="xlarge" shape="circle" />
           <Avatar v-if="avatar" :image="avatar" class="p-mr-2 avatar" size="xlarge" shape="circle" @click="showAvatarModal=true" />
@@ -55,7 +55,6 @@
       </div>
     </div>
   </Sidebar>
-
   <Dialog header="תמונת פרופיל" v-model:visible="showAvatarModal"  modal>
       <div class="progile-image">
           <img :src="avatar" >
@@ -66,7 +65,6 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
 import Navbar from '../src/components/navbar/Navbar'
 import 'primevue/resources/themes/saga-blue/theme.css'      
 import 'primevue/resources/primevue.min.css'                
@@ -77,12 +75,15 @@ import Avatar from 'primevue/avatar';
 import ChatBox from '../src/components/chat/ChatBox.vue'
 import store from '../src/store/index'
 import {showAvatarModal} from './methods/AvatarModal'
-import { useRouter } from 'vue-router'
+import { useRoute,useRouter} from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+ 
 
 export default {
   components:{Navbar,Sidebar,Avatar,Dialog,ChatBox},
   setup(){
     const router = useRouter()
+    const route = useRoute()
     const visibleLeft = ref(false)
     const handleToggleSideBar = ()=>{
       visibleLeft.value =! visibleLeft.value
@@ -91,6 +92,8 @@ export default {
       visibleLeft.value=false
       router.push({name:path})
     }
+
+    const path = ref(computed(() =>route.path))
 
     const avatar = ref(computed(()=>{
       if(store.getters.getUserProfile.avatar){
@@ -109,7 +112,17 @@ export default {
     const qnt_msg = ref(computed(()=>{
       return store.getters.get_qnt_msgs
     }))
-    return{visibleLeft,handleToggleSideBar,handleRedirect,userRole,userName,avatar,showAvatarModal,qnt_msg}
+    onMounted(()=>{
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+      window.addEventListener('resize', () => {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      });
+      
+    })
+    return{visibleLeft,handleToggleSideBar,handleRedirect,userRole,userName,avatar,showAvatarModal,qnt_msg,path}
   }
 
 }
@@ -122,9 +135,12 @@ export default {
     margin: 0;
   }
   .app-container{
-    width: 100vw;
+    width: 100%;
+    height: calc(100vh - 60px);
     background: rgb(243,244,248);
     background: radial-gradient(circle, rgba(243,244,248,1) 0%, rgba(215,221,229,1) 100%);
+    overflow-x: hidden;
+    
   }
   .sidebar-container{
     width: 100%;
@@ -195,6 +211,12 @@ export default {
   .progile-image img{
     max-height: 100%;
     max-width: 100%;
+  }
+
+  @media screen and (max-width: 600px) {
+   .app-container{
+      height: calc(var(--vh, 1vh) * 100 - 60px); 
+   }
   }
   
 </style>

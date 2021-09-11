@@ -140,13 +140,14 @@ export default {
 
 <style scoped>
     .settings-container{
-        width: 100vw;
-        height: calc(100vh - 3rem);
+        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         overflow: hidden;
+        overflow-y: auto;
     }
     .wrapper{
         width: 95%;
@@ -196,5 +197,13 @@ export default {
         height: 25%;
         border-radius: 50%;
         cursor: pointer;
+    }
+    @media screen and (max-width: 600px) {
+         .wrapper{
+             flex-direction: column;
+         }
+         .box{
+             margin-bottom: 10px;
+         }
     }
 </style>

@@ -40,7 +40,6 @@ import { useRouter } from 'vue-router';
 import { ref } from '@vue/reactivity';
 import {projectFirestore,projectAuth} from '../../firebase/config'
 import Swal from 'sweetalert2'
-import Avatar from 'primevue/avatar';
 export default {
     components:{InputText,Button},
     setup(){
@@ -128,7 +127,7 @@ export default {
 <style scoped>
     .signup-container{
         width: 100%;
-        height: calc(100vh - 3rem);
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
