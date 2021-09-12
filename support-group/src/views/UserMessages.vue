@@ -9,7 +9,7 @@
                 <template #header >
                     <div @click="handleWhenPersonalMsgTabOpen(message)">
                         <i class="pi pi-envelope"></i>
-                        <span>{{message.title}}</span>
+                        <span>מאת:{{message.from}}, {{message.title}}</span>
                         <Tag v-if="message.seenBy" value="נקרא" severity="danger"></Tag>
                         <Tag v-else value="חדש" severity="success"></Tag>
                     </div>
