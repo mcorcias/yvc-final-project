@@ -277,8 +277,8 @@ export default {
         color: white;
     }
     #customers td img{
-        max-width:100%;
-        max-height: 100%;
+        max-width:30%;
+        max-height: 30%;
         border-radius: 15px;
     }
     #customers .msg{

@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 import { projectFirestore } from '../firebase/config';
 
+let unsub;
 export default createStore({
   state: {
     user: '',
@@ -33,7 +34,7 @@ export default createStore({
     },
     async update_numbers_msgs({ commit }, user_uid) {
       const tempArr = [];
-      projectFirestore
+      unsub = projectFirestore
         .collection('UserMessages')
         .doc('users')
         .collection(user_uid)
@@ -67,6 +68,12 @@ export default createStore({
             }
           });
         });
+    },
+    stop_snaps({ commit }) {
+      if (unsub) {
+        commit('update_qnt_msgs', 0);
+        unsub();
+      }
     },
   },
   getters: {
