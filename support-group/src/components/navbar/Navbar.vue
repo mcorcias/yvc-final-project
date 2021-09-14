@@ -84,6 +84,11 @@ export default {
         height: 60px; 
         display: flex;
         border-bottom: 1px solid lightgray;
+        background: rgb(243,244,248);
+        background: radial-gradient(circle, rgba(243,244,248,1) 0%, rgba(215,221,229,1) 100%);
+        -webkit-box-shadow: 0px 17px 15px -9px #000000; 
+        box-shadow: 0px 17px 15px -9px #000000;
+
     }
     .headlines{
         width: 20%;
